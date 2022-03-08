@@ -4,15 +4,23 @@
  */
 package login;
 
+import database.ConnectionFactory;
+import database.beans.User;
+import database.exceptions.DAOException;
+import database.exceptions.LoginException;
+import database.models.UserDAO;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Objects;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 /**
  *
@@ -34,7 +42,7 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        String username = request.getParameter("username");
+        String login = request.getParameter("username");
         String password = request.getParameter("password");
 
         out.println("<html>");
@@ -42,15 +50,26 @@ public class LoginServlet extends HttpServlet {
         out.println("<title>Login efetuado</title>");
         out.println("</head>");
         out.println("<body>");
-        if(Objects.equals(username, password))
-        {
-            out.println("<h1>Login efetuado com sucesso</h1>");
-            out.println("<a href=\"/Exercicios/PortalServlet\">Portal</a>");
-        }else{
+        try {
+            User user = new UserDAO(new ConnectionFactory().getConnection()).getByLogin(login);
+            if(user != null && user.getPassword().equals(password) || userAlreadyLogged(request)){
+                RequestDispatcher view = request.getRequestDispatcher("/PortalServlet");
+                request.getSession().setAttribute("logged", login);
+                view.forward(request, response);
+            }else{
+                throw new LoginException("Usuário ou senha inválidos");
+            }
+        } catch (DAOException e) {
+            out.println("<h1>Erro com o banco de dados: </h1>" + e.getMessage());
+        } catch (LoginException e) {
             out.println("<h1>Problema ao logar</h1>");
-            out.println("<a href=\"/index.html\">Portal</a>");
+            out.println("<a href=\"/Exercicios/login/index.html\">Portal</a>");
         }
         out.println("</body>");
+    }
+
+    private boolean userAlreadyLogged(HttpServletRequest request) {
+        return request.getSession().getAttribute("user") != null;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

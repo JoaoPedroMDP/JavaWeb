@@ -4,7 +4,10 @@
  */
 package cadastro;
 
-import login.Usuario;
+import database.ConnectionFactory;
+import database.beans.User;
+import database.exceptions.DAOException;
+import database.models.UserDAO;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,9 +15,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.PrintWriter;
 
 /**
  *
@@ -22,8 +25,6 @@ import java.util.List;
  */
 @WebServlet(name = "CadastrarUsuarioServlet", urlPatterns = {"/CadastrarUsuarioServlet"})
 public class CadastrarUsuarioServlet extends HttpServlet {
-
-    private List<Usuario> users;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,22 +39,35 @@ public class CadastrarUsuarioServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response
     )throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        Usuario user = new Usuario(
-                request.getParameter("name"),
-                request.getParameter("username"),
-                request.getParameter("password")
-        );
-
-        if(this.users == null){
-            this.users = new ArrayList<>();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("logged") == null) {
+            RequestDispatcher rd = request.getRequestDispatcher("/ErrorServlet");
+            request.setAttribute("error", "Você precisa se autenticar para acessar esta página");
+            request.setAttribute("link", "Exercicios/login/index.html");
+            rd.forward(request, response);
+            return;
         }
 
-        this.users.add(user);
-        request.setAttribute("list", users);
+        response.setContentType("text/html;charset=UTF-8");
+        User user = new User();
+        System.out.println(request.getParameter("name"));
+        System.out.println(request.getParameter("login"));
+        System.out.println(request.getParameter("password"));
 
-        RequestDispatcher view = request.getRequestDispatcher("/PortalServlet");
-        view.forward(request, response);
+        user.setName(request.getParameter("name"));
+        user.setLogin(request.getParameter("login"));
+        user.setPassword(request.getParameter("password"));
+
+        try {
+            UserDAO dao = new UserDAO(new ConnectionFactory().getConnection());
+            dao.insert(user);
+            dao.closeConnection();
+            RequestDispatcher view = request.getRequestDispatcher("/PortalServlet");
+            view.forward(request, response);
+        } catch (DAOException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

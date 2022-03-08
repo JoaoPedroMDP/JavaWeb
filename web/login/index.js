@@ -50,11 +50,6 @@ function fieldsPassValidation() {
     }
   }
 
-  if (pass && data[0].value != data[1].value) {
-    alert("Name e username precisam ser iguais.");
-    pass = false;
-  }
-
   return pass;
 }
 

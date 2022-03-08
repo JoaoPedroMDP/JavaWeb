@@ -2,20 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package login;
+package portal;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
  * @author joao
  */
-@WebServlet(name = "LogoutServlet", urlPatterns = {"/LogoutServlet"})
-public class LogoutServlet extends HttpServlet {
+@WebServlet(name = "ErroServlet", urlPatterns = {"/ErroServlet"})
+public class ErroServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,18 +35,11 @@ public class LogoutServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<link rel=\"stylesheet\"");
-                out.println("href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\"");
-                out.println("integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\"");
-                out.println("crossorigin=\"anonymous\"");
-            out.println("/>");
-            out.println("<title>Servlet LogoutServlet</title>");            
+            out.println("<title>Servlet ErroServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Deslogado</h1>");
-            HttpSession session = request.getSession(false);
-            session.invalidate();
-            out.println("<a href=\"login/index.html\"><button class=\"btn btn-primary\">Início</button></a>");
+            out.println("<h1>Servlet ERRO: " + request.getAttribute("msg") + "</h1>");
+            out.println("<a href=\"\""+ request.getAttribute("link") +"> </a>");
             out.println("</body>");
             out.println("</html>");
         }

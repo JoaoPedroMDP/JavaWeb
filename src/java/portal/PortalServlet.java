@@ -4,16 +4,23 @@
  */
 package portal;
 
-import login.Usuario;
+import database.ConnectionFactory;
+import database.beans.User;
+import database.exceptions.DAOException;
+import database.models.UserDAO;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -21,17 +28,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "PortalServlet", urlPatterns = {"/PortalServlet"})
 public class PortalServlet extends HttpServlet {
-
-    private List<Usuario> createUsers() {
-        Usuario user1 = new Usuario("João", "userJoao", "SenhaJoão");
-        Usuario user2 = new Usuario("Maria", "userMaria", "SenhaMaria");
-        Usuario user3 = new Usuario("Rumplestieltskien", "userRumplestieltskien", "SenhaRumplestieltskien");
-        List<Usuario> users = new ArrayList<Usuario>();
-        users.add(user1);
-        users.add(user2);
-        users.add(user3);
-        return users;
-    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,45 +41,56 @@ public class PortalServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        List<Usuario> users = (ArrayList<Usuario>) request.getAttribute("list");
 
         try (PrintWriter out = response.getWriter()) {
+
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Portal</title>");
             out.println("<link rel=\"stylesheet\"");
-                out.println("href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\"");
-                out.println("integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\"");
-                out.println("crossorigin=\"anonymous\"");
-                out.println("/>");
+            out.println("href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\"");
+            out.println("integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\"");
+            out.println("crossorigin=\"anonymous\"");
+            out.println("/>");
             out.println("<link rel=\"stylesheet\"");
-                out.println("href=\"/css/form.css\"");
-                out.println("/>");
+            out.println("href=\"/css/form.css\"");
+            out.println("/>");
             out.println("</head>");
             out.println("<body>");
 
+            HttpSession session = request.getSession();
+            if(session.getAttribute("logged") == null) {
+                RequestDispatcher rd = request.getRequestDispatcher("/ErrorServlet");
+                request.setAttribute("error", "Você precisa se autenticar para acessar esta página");
+                request.setAttribute("link", "Exercicios/login/index.html");
+                rd.forward(request, response);
+                return;
+            }
+
             out.println("<div class=\"container d-flex justify-content-center\">");
-                out.println("<form action=\"/Exercicios/CadastrarUsuarioServlet\" method=\"post\" class=\"d-flex flex-column form\" >");
-                    out.println("<input class=\"form-control\" type=\"text\" name=\"name\" placeholder=\"name\"/>");
-                    out.println("<span class=\"error-name error\"></span>");
-                    out.println("<input class=\"form-control\" type=\"text\" name=\"username\" placeholder=\"username\"/>");
-                    out.println("<span class=\"error-username error\"></span>");
-                    out.println("<input class=\"form-control\" type=\"password\" name=\"password\" placeholder=\"password\" />");
-                    out.println("<span class=\"error-password error\"></span>");
-                    out.println("<button name=\"enter\" type=\"submit\" class=\"enter btn btn-primary\">Criar</button>");
-                out.println("</form>");
+            out.println("<form action=\"/Exercicios/CadastrarUsuarioServlet\" method=\"post\" class=\"d-flex flex-column form\" >");
+            out.println("<input class=\"form-control\" type=\"text\" name=\"name\" placeholder=\"name\"/>");
+            out.println("<span class=\"error-name error\"></span>");
+            out.println("<input class=\"form-control\" type=\"text\" name=\"login\" placeholder=\"login\"/>");
+            out.println("<span class=\"error-login error\"></span>");
+            out.println("<input class=\"form-control\" type=\"password\" name=\"password\" placeholder=\"password\" />");
+            out.println("<span class=\"error-password error\"></span>");
+            out.println("<button name=\"enter\" type=\"submit\" class=\"enter btn btn-primary\">Criar</button>");
+            out.println("</form>");
             out.println("</div>");
 
+            UserDAO dao = new UserDAO(new ConnectionFactory().getConnection());
+            List<User> users = dao.getAll();
             out.println("<div class=\"users\">");
                 out.println("<h1>Usuários</h1>");
                 out.println("<ul>");
                     for(int i = 0; i < users.size() ; i++)
                     {
                         out.println("<li>");
-                        out.println("<p class=\"name\"> Nome: "+ users.get(i).name +"</p>");
-                        out.println("<p class=\"username\"> Username: "+ users.get(i).username +"</p>");
-                        out.println("<p class=\"password\"> Senha: "+ users.get(i).password +"</p>");
+                        out.println("<p class=\"name\"> Nome: "+ users.get(i).getName() +"</p>");
+                        out.println("<p class=\"username\"> Login: "+ users.get(i).getLogin() +"</p>");
+                        out.println("<p class=\"password\"> Senha: "+ users.get(i).getPassword() +"</p>");
                         out.println("</li>");
                     }
                 out.println("</ul>");
@@ -91,8 +98,8 @@ public class PortalServlet extends HttpServlet {
             out.println("</div>");
             out.println("</body>");
             out.println("</html>");
-
-            request.setAttribute("userList", users);
+        } catch (DAOException e) {
+            e.printStackTrace();
         }
     }
 
