@@ -1,18 +1,15 @@
 package tests;
 
-import database.ConnectionFactory;
-import database.beans.User;
-import database.exceptions.DAOException;
-import database.models.UserDAO;
-
-import java.util.HashMap;
-import java.util.List;
+import com.ufpr.tads.web2.dao.ConnectionFactory;
+import com.ufpr.tads.web2.beans.Usuario;
+import com.ufpr.tads.web2.dao.exceptions.DAOException;
+import com.ufpr.tads.web2.dao.UsuarioDAO;
 
 public class DAOTest {
     public static void main(String[] args) {
         try (ConnectionFactory factory = new ConnectionFactory()) {
-            UserDAO dao = new UserDAO(factory.getConnection());
-            User user = dao.getByLogin("login");
+            UsuarioDAO dao = new UsuarioDAO(factory.getConnection());
+            Usuario user = dao.getByLogin("login");
             if(user != null) {
                 System.out.println(user.toString());
             }else{

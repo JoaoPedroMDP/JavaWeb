@@ -1,6 +1,6 @@
-package database.interfaces;
+package com.ufpr.tads.web2.dao.interfaces;
 
-import database.exceptions.DAOException;
+import com.ufpr.tads.web2.dao.exceptions.DAOException;
 
 import java.util.List;
 

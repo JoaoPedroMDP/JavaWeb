@@ -1,4 +1,4 @@
-package database.exceptions;
+package com.ufpr.tads.web2.dao.exceptions;
 
 public class LoginException extends Exception{
     public LoginException(){}

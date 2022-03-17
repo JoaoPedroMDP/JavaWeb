@@ -2,32 +2,30 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package login;
+package com.ufpr.tads.web2.servlets;
 
-import database.ConnectionFactory;
-import database.beans.User;
-import database.exceptions.DAOException;
-import database.exceptions.LoginException;
-import database.models.UserDAO;
+import com.ufpr.tads.web2.beans.ConfigBean;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Objects;
-
-import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
  *
  * @author joao
  */
-@WebServlet(name = "LoginServlet", urlPatterns = {"/LoginServlet"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "StartupServlet", urlPatterns = {"/StartupServlet"}, loadOnStartup = 1)
+public class StartupServlet extends HttpServlet {
+
+    public void init() {
+        ServletContext ctx = getServletContext();
+        ctx.setAttribute("configuracao", new ConfigBean("admin@email.com"));
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,35 +39,7 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        String login = request.getParameter("username");
-        String password = request.getParameter("password");
 
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<title>Login efetuado</title>");
-        out.println("</head>");
-        out.println("<body>");
-        try {
-            User user = new UserDAO(new ConnectionFactory().getConnection()).getByLogin(login);
-            if(user != null && user.getPassword().equals(password) || userAlreadyLogged(request)){
-                RequestDispatcher view = request.getRequestDispatcher("/PortalServlet");
-                request.getSession().setAttribute("logged", login);
-                view.forward(request, response);
-            }else{
-                throw new LoginException("Usuário ou senha inválidos");
-            }
-        } catch (DAOException e) {
-            out.println("<h1>Erro com o banco de dados: </h1>" + e.getMessage());
-        } catch (LoginException e) {
-            out.println("<h1>Problema ao logar</h1>");
-            out.println("<a href=\"/Exercicios/login/index.html\">Portal</a>");
-        }
-        out.println("</body>");
-    }
-
-    private boolean userAlreadyLogged(HttpServletRequest request) {
-        return request.getSession().getAttribute("user") != null;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

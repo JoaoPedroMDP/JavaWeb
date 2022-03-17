@@ -2,13 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package cadastro;
+package com.ufpr.tads.web2.servlets;
 
-import database.ConnectionFactory;
-import database.beans.User;
-import database.exceptions.DAOException;
-import database.models.UserDAO;
+import com.ufpr.tads.web2.beans.Usuario;
+import com.ufpr.tads.web2.dao.ConnectionFactory;
+import com.ufpr.tads.web2.dao.UsuarioDAO;
+import com.ufpr.tads.web2.dao.exceptions.DAOException;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,8 +18,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  *
@@ -35,21 +35,17 @@ public class CadastrarUsuarioServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(
-            HttpServletRequest request,
-            HttpServletResponse response
-    )throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-        if(session.getAttribute("logged") == null) {
-            RequestDispatcher rd = request.getRequestDispatcher("/ErrorServlet");
-            request.setAttribute("error", "Você precisa se autenticar para acessar esta página");
-            request.setAttribute("link", "Exercicios/login/index.html");
+        if(session.getAttribute("loginBean") == null){
+            request.setAttribute("msg", "Você precisa estar logado para acessar essa página");
+            request.setAttribute("page", "index.html");
+            RequestDispatcher rd = request.getRequestDispatcher("erro.jsp");
             rd.forward(request, response);
-            return;
         }
 
-        response.setContentType("text/html;charset=UTF-8");
-        User user = new User();
+        Usuario user = new Usuario();
         System.out.println(request.getParameter("name"));
         System.out.println(request.getParameter("login"));
         System.out.println(request.getParameter("password"));
@@ -59,10 +55,10 @@ public class CadastrarUsuarioServlet extends HttpServlet {
         user.setPassword(request.getParameter("password"));
 
         try {
-            UserDAO dao = new UserDAO(new ConnectionFactory().getConnection());
+            UsuarioDAO dao = new UsuarioDAO(new ConnectionFactory().getConnection());
             dao.insert(user);
             dao.closeConnection();
-            RequestDispatcher view = request.getRequestDispatcher("/PortalServlet");
+            RequestDispatcher view = request.getRequestDispatcher("portal.jsp");
             view.forward(request, response);
         } catch (DAOException e) {
             System.out.println(e.getMessage());

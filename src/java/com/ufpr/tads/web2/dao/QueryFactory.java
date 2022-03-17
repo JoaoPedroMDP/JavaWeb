@@ -1,4 +1,4 @@
-package database;
+package com.ufpr.tads.web2.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;

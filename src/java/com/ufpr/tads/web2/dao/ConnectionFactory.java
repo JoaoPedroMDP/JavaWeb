@@ -1,7 +1,7 @@
-package database;
+package com.ufpr.tads.web2.dao;
 
 
-import database.exceptions.DAOException;
+import com.ufpr.tads.web2.dao.exceptions.DAOException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

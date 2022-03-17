@@ -1,9 +1,8 @@
-package database.models;
+package com.ufpr.tads.web2.dao;
 
-import database.QueryFactory;
-import database.beans.User;
-import database.exceptions.DAOException;
-import database.interfaces.DAO;
+import com.ufpr.tads.web2.beans.Usuario;
+import com.ufpr.tads.web2.dao.exceptions.DAOException;
+import com.ufpr.tads.web2.dao.interfaces.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,13 +12,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class UserDAO extends QueryFactory implements DAO<User> {
+public class UsuarioDAO extends QueryFactory implements DAO<Usuario> {
 
     private Connection con;
     private final String tableName;
     private ArrayList<String> columns;
 
-    public UserDAO(Connection con) throws DAOException {
+    public UsuarioDAO(Connection con) throws DAOException {
         if(con == null){
             throw new DAOException("Conexão nula ao criar UserDAO");
         }
@@ -33,19 +32,19 @@ public class UserDAO extends QueryFactory implements DAO<User> {
     }
 
     @Override
-    public User get(long id) throws DAOException {
+    public Usuario get(long id) throws DAOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public List<User> getAll() throws DAOException {
-        List<User> results = new ArrayList<>();
+    public List<Usuario> getAll() throws DAOException {
+        List<Usuario> results = new ArrayList<>();
         String query = mount_select(tableName);
         try(PreparedStatement stmt = con.prepareStatement(query)){
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
-                User user = new User();
+                Usuario user = new Usuario();
                 user.setName(rs.getString("name"));
                 user.setLogin(rs.getString("login"));
                 user.setPassword(rs.getString("password"));
@@ -58,7 +57,7 @@ public class UserDAO extends QueryFactory implements DAO<User> {
         return results;
     }
 
-    public User getByLogin(String login) throws DAOException {
+    public Usuario getByLogin(String login) throws DAOException {
         HashMap<String, String> params = new HashMap<String, String>(){{
             put("login", login);
         }};
@@ -66,7 +65,7 @@ public class UserDAO extends QueryFactory implements DAO<User> {
 
         try(PreparedStatement stmt = con.prepareStatement(query)){
             stmt.setString(1, login);
-            User user = new User();
+            Usuario user = new Usuario();
             ResultSet rs = stmt.executeQuery();
 
             if(rs.next()){
@@ -83,7 +82,7 @@ public class UserDAO extends QueryFactory implements DAO<User> {
     }
 
     @Override
-    public void insert(User user) throws DAOException {
+    public void insert(Usuario user) throws DAOException {
         String query = mount_insert(tableName, columns);
         try (PreparedStatement stmt = con.prepareStatement(query)){
             stmt.setString(1, user.getLogin());
@@ -96,12 +95,12 @@ public class UserDAO extends QueryFactory implements DAO<User> {
     }
 
     @Override
-    public void update(User user) throws DAOException {
+    public void update(Usuario user) throws DAOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void delete(User user) throws DAOException {
+    public void delete(Usuario user) throws DAOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -113,6 +112,4 @@ public class UserDAO extends QueryFactory implements DAO<User> {
             e.printStackTrace();
         }
     }
-
-
 }

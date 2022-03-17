@@ -1,4 +1,4 @@
-package database.exceptions;
+package com.ufpr.tads.web2.dao.exceptions;
 
 public class DAOException extends Exception{
     public DAOException(){}

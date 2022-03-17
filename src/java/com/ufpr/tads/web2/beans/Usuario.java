@@ -1,16 +1,16 @@
-package database.beans;
+package com.ufpr.tads.web2.beans;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class Usuario implements Serializable {
     private int id;
     private String name;
     private String login;
     private String password;
 
-    public User() {}
+    public Usuario() {}
 
-    public User(int id, String name, String login, String password) {
+    public Usuario(int id, String name, String login, String password) {
         this.id = id;
         this.name = name;
         this.login = login;

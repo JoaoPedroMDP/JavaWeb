@@ -44,7 +44,7 @@ function fieldsPassValidation() {
   let pass = true;
 
   for (field in data) {
-    if (data[field].value == "") {
+    if (data[field].value === "") {
       appendError(data[field].key, "Este campo não pode estar vazio.");
       pass = false;
     }
