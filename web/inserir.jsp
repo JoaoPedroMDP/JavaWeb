@@ -27,7 +27,7 @@
     <body>
         <% if(session.getAttribute("loginBean") == null){
             request.setAttribute("msg", "Você precisa estar logado para acessar essa página");
-            request.setAttribute("page", "index.html");
+            request.setAttribute("page", "index.jsp");
             RequestDispatcher rd = request.getRequestDispatcher("erro.jsp");
             rd.forward(request, response);} %>
 

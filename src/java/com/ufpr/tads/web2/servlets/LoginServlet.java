@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
             throw new DAOException("Usuário não encontrado");
 
         if(!user.getPassword().equals(password))
-            throw new LoginException("Credenciais inválidas");
+            throw new LoginException("Usuário deve se autenticar para acessar o sistema");
 
         return user;
     }
@@ -48,7 +48,7 @@ public class LoginServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
 
         try {
             String login = request.getParameter("login");
@@ -66,8 +66,7 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("msg", "Erro ao buscar usuário");
         }
 
-        request.setAttribute("page", "index.html");
-        RequestDispatcher rd = request.getRequestDispatcher("erro.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
         rd.forward(request, response);
     }
 
