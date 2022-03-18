@@ -1,0 +1,6 @@
+<%-- any content can be specified here e.g.: --%>
+<%@ page pageEncoding="UTF-8" %>
+<div class="footer">
+    <jsp:useBean id="configBean" class="com.ufpr.tads.web2.beans.ConfigBean" scope="application"></jsp:useBean>
+    <p>Em caso de problemas favor contactar o administrador em <jsp:getProperty name="configBean" property="adminEmail"/></p>
+</div>

@@ -28,12 +28,12 @@ public class LoginServlet extends HttpServlet {
 
     private Usuario getUserToLogin(String login, String password) throws DAOException, LoginException {
         Usuario user = new UsuarioDAO(new ConnectionFactory().getConnection()).getByLogin(login);
-        if(user == null)
+        if(user == null) {
             throw new DAOException("Usuário não encontrado");
-
-        if(!user.getPassword().equals(password))
-            throw new LoginException("Usuário deve se autenticar para acessar o sistema");
-
+        }
+        if(!user.getPassword().equals(password)) {
+            throw new LoginException("Usuário/Senha inválidos");
+        }
         return user;
     }
 

@@ -32,7 +32,7 @@
             rd.forward(request, response);} %>
 
         <div class="container d-flex justify-content-center">
-            <form action="/Exercicios/CadastrarUsuarioServlet" method="post" class="d-flex flex-column form" >
+            <form action="${pageContext.request.contextPath}/CadastrarUsuarioServlet" method="post" class="d-flex flex-column form" >
                 <input class="form-control" type="text" name="name" placeholder="name"/>
                 <span class="error-name error"></span>
 

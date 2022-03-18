@@ -29,14 +29,14 @@
 <div class="container d-flex flex-column align-content-center text-center">
     <div class="errors">
         <%
-            String message = request.getParameter("msg");
+            String message = (String) request.getAttribute("msg");
             if( message != null){
                 out.println("<span class\"error-message\">" + message + "</span>");
             }
         %>
     </div>
     <form
-        action="/Exercicios/LoginServlet"
+        action="${pageContext.request.contextPath}/LoginServlet"
         method="post"
         class="d-flex flex-column form"
     >

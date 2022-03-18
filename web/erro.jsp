@@ -18,10 +18,7 @@
                 <a href="<%=request.getAttribute("page")%>">Continuar</a>
             </div>
         </div>
-        <div class="footer">
-            <jsp:useBean id="configBean" class="com.ufpr.tads.web2.beans.ConfigBean" scope="application"></jsp:useBean>
-            <p>Em caso de problemas favor contactar o administrador em <jsp:getProperty name="configBean" property="adminEmail"/></p>
-        </div>
+
     </body>
     <style>
         html, body {
@@ -44,4 +41,5 @@
             clear:both;
         }
     </style>
+    <jsp:include page="WEB-INF/jspf/footer.jspf"></jsp:include>
 </html>
