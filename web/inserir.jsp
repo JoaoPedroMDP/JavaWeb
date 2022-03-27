@@ -27,12 +27,12 @@
     <body>
         <% if(session.getAttribute("loginBean") == null){
             request.setAttribute("msg", "Você precisa estar logado para acessar essa página");
-            request.setAttribute("page", "index.html");
+            request.setAttribute("page", "index.jsp");
             RequestDispatcher rd = request.getRequestDispatcher("erro.jsp");
             rd.forward(request, response);} %>
 
         <div class="container d-flex justify-content-center">
-            <form action="/Exercicios/CadastrarUsuarioServlet" method="post" class="d-flex flex-column form" >
+            <form action="${pageContext.request.contextPath}/CadastrarUsuarioServlet" method="post" class="d-flex flex-column form" >
                 <input class="form-control" type="text" name="name" placeholder="name"/>
                 <span class="error-name error"></span>
 

@@ -37,7 +37,7 @@ public class LogoutServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.invalidate();
             out.println("<h1>Deslogado</h1>");
-            out.println("<a href=\"index.html\">Página inicial</a>");
+            out.println("<a href=\"index.jsp\">Página inicial</a>");
         }
     }
 

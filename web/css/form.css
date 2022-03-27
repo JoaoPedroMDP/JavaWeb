@@ -3,7 +3,7 @@
 }
 
 .form {
-  align-items: flex-end;
+  max-width: 160px !important;
 }
 
 .error {
